@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef } from 'react';
 import type { InspectionFormData } from '../types/inspection';
 
 const STORAGE_KEY = 'auditor_jp_form_data';
+const STORAGE_VERSION_KEY = 'auditor_jp_form_version';
+const CURRENT_VERSION = 2; // v2: 17 items / 7 groups / cumple_parcial
 const SAVE_DEBOUNCE_MS = 500;
 
 export function getDefaultFormData(): InspectionFormData {
@@ -29,6 +31,16 @@ export function useFormPersistence(formData: InspectionFormData, setFormData: (d
     initializedRef.current = true;
 
     try {
+      const savedVersion = localStorage.getItem(STORAGE_VERSION_KEY);
+      const version = savedVersion ? parseInt(savedVersion, 10) : 1;
+
+      // Clear incompatible data from old versions
+      if (version < CURRENT_VERSION) {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.setItem(STORAGE_VERSION_KEY, String(CURRENT_VERSION));
+        return;
+      }
+
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved) as InspectionFormData;
@@ -45,6 +57,7 @@ export function useFormPersistence(formData: InspectionFormData, setFormData: (d
     timeoutRef.current = window.setTimeout(() => {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        localStorage.setItem(STORAGE_VERSION_KEY, String(CURRENT_VERSION));
       } catch (e) {
         console.error('Error saving form data:', e);
       }
@@ -59,6 +72,7 @@ export function useFormPersistence(formData: InspectionFormData, setFormData: (d
 
   const clearSavedData = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(STORAGE_VERSION_KEY);
   }, []);
 
   return { clearSavedData };

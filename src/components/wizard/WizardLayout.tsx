@@ -4,22 +4,28 @@ import type { InspectionFormData, InspectionItemData } from '../../types/inspect
 import { useFormPersistence, getDefaultFormData } from '../../hooks/useFormPersistence';
 import { useAIAnalysis } from '../../hooks/useAIAnalysis';
 import { clearAllPhotos } from '../../hooks/usePhotoCapture';
-import { generatePDF } from '../report/PDFGenerator';
+import { generateWordReport } from '../report/WordGenerator';
 import ProgressBar from '../ui/ProgressBar';
 import Button from '../ui/Button';
 import StepHeader from './StepHeader';
-import StepDocumentosLegales from './StepDocumentosLegales';
-import StepConocimientos from './StepConocimientos';
-import StepInfraestructura from './StepInfraestructura';
+import StepInspectionGroup from './StepInspectionGroup';
 import StepComentarios from './StepComentarios';
 import StepReview from './StepReview';
 
-const STEP_LABELS = ['Datos', 'Legal', 'Conocim.', 'Infraestr.', 'Coment.', 'Informe'];
+const STEP_LABELS = [
+  'Datos', 'Seguridad', 'Aseo', 'Infraestr.', 'Proyectos',
+  'Comunic.', 'Serv.Púb.', 'Conviv.', 'Coment.', 'Informe',
+];
+
+const SECTION_IDS = [
+  'seguridad', 'aseo', 'infraestructura', 'proyectos',
+  'comunicacion', 'servicios_publicos', 'convivencia',
+];
 
 export default function WizardLayout() {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<InspectionFormData>(getDefaultFormData());
-  const [pdfLoading, setPdfLoading] = useState(false);
+  const [reportLoading, setReportLoading] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   const { clearSavedData } = useFormPersistence(formData, setFormData);
@@ -45,15 +51,15 @@ export default function WizardLayout() {
     analyze(formData);
   }, [analyze, formData]);
 
-  const handleGeneratePDF = useCallback(async () => {
-    setPdfLoading(true);
+  const handleGenerateReport = useCallback(async () => {
+    setReportLoading(true);
     try {
-      await generatePDF(formData, analysis);
+      await generateWordReport(formData, analysis);
     } catch (err) {
-      console.error('Error generating PDF:', err);
-      alert('Error al generar PDF: ' + (err instanceof Error ? err.message : 'Error desconocido'));
+      console.error('Error generating report:', err);
+      alert('Error al generar informe: ' + (err instanceof Error ? err.message : 'Error desconocido'));
     } finally {
-      setPdfLoading(false);
+      setReportLoading(false);
     }
   }, [formData, analysis]);
 
@@ -66,57 +72,54 @@ export default function WizardLayout() {
   };
 
   const renderStep = () => {
-    switch (currentStep) {
-      case 0:
-        return (
-          <StepHeader
-            data={formData.header}
-            onChange={header => setFormData(prev => ({ ...prev, header }))}
-          />
-        );
-      case 1:
-        return (
-          <StepDocumentosLegales
-            items={formData.sections}
-            onItemChange={handleItemChange}
-          />
-        );
-      case 2:
-        return (
-          <StepConocimientos
-            items={formData.sections}
-            onItemChange={handleItemChange}
-          />
-        );
-      case 3:
-        return (
-          <StepInfraestructura
-            items={formData.sections}
-            onItemChange={handleItemChange}
-          />
-        );
-      case 4:
-        return (
-          <StepComentarios
-            comentarios={formData.comentarios}
-            onChange={comentarios => setFormData(prev => ({ ...prev, comentarios }))}
-          />
-        );
-      case 5:
-        return (
-          <StepReview
-            formData={formData}
-            analysis={analysis}
-            aiLoading={aiLoading}
-            aiError={aiError}
-            onAnalyze={handleAnalyze}
-            onGeneratePDF={handleGeneratePDF}
-            pdfLoading={pdfLoading}
-          />
-        );
-      default:
-        return null;
+    // Step 0: Header
+    if (currentStep === 0) {
+      return (
+        <StepHeader
+          data={formData.header}
+          onChange={header => setFormData(prev => ({ ...prev, header }))}
+        />
+      );
     }
+
+    // Steps 1-7: Inspection groups
+    if (currentStep >= 1 && currentStep <= 7) {
+      const sectionId = SECTION_IDS[currentStep - 1];
+      return (
+        <StepInspectionGroup
+          sectionId={sectionId}
+          items={formData.sections}
+          onItemChange={handleItemChange}
+        />
+      );
+    }
+
+    // Step 8: Comments
+    if (currentStep === 8) {
+      return (
+        <StepComentarios
+          comentarios={formData.comentarios}
+          onChange={comentarios => setFormData(prev => ({ ...prev, comentarios }))}
+        />
+      );
+    }
+
+    // Step 9: Review
+    if (currentStep === 9) {
+      return (
+        <StepReview
+          formData={formData}
+          analysis={analysis}
+          aiLoading={aiLoading}
+          aiError={aiError}
+          onAnalyze={handleAnalyze}
+          onGenerateReport={handleGenerateReport}
+          reportLoading={reportLoading}
+        />
+      );
+    }
+
+    return null;
   };
 
   return (

@@ -17,24 +17,23 @@ export default function ProgressBar({ currentStep, totalSteps, labels }: Progres
         />
       </div>
 
-      {/* Step indicators */}
-      <div className="flex justify-between">
+      {/* Step label + dot indicators */}
+      <div className="flex items-center justify-between">
         {labels.map((label, index) => (
           <div key={index} className="flex flex-col items-center" style={{ width: `${100 / totalSteps}%` }}>
             <div
-              className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
+              className={`w-3 h-3 rounded-full transition-colors ${
                 index < currentStep
-                  ? 'bg-primary-600 text-white'
+                  ? 'bg-primary-600'
                   : index === currentStep
-                  ? 'bg-primary-600 text-white ring-4 ring-primary-100'
-                  : 'bg-slate-200 text-slate-500'
+                  ? 'bg-primary-600 ring-3 ring-primary-100'
+                  : 'bg-slate-200'
               }`}
-            >
-              {index + 1}
-            </div>
+            />
             <span
-              className={`mt-1 text-[10px] text-center leading-tight ${
-                index <= currentStep ? 'text-primary-700 font-medium' : 'text-slate-400'
+              className={`mt-0.5 text-[8px] text-center leading-tight truncate w-full ${
+                index === currentStep ? 'text-primary-700 font-bold' :
+                index < currentStep ? 'text-primary-600 font-medium' : 'text-slate-400'
               }`}
             >
               {label}

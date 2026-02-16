@@ -1,4 +1,4 @@
-export type ComplianceStatus = 'cumple' | 'no_cumple' | 'no_aplica' | null;
+export type ComplianceStatus = 'cumple' | 'cumple_parcial' | 'no_cumple' | 'no_aplica' | null;
 
 export interface InspectionItemData {
   id: string;
@@ -10,6 +10,8 @@ export interface InspectionItemData {
 export interface InspectionItemDef {
   id: string;
   label: string;
+  criterio: string;
+  frecuencia: string;
   allowNA: boolean; // Whether "No Aplica" is an option
 }
 
@@ -48,6 +50,7 @@ export interface SectionScore {
   sectionTitle: string;
   total: number;
   cumple: number;
+  cumpleParcial: number;
   noCumple: number;
   noAplica: number;
   porcentaje: number;
