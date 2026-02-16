@@ -1,35 +1,38 @@
 import type { AIAnalysis, InspectionFormData } from '../types/inspection';
 import { buildAIPrompt } from '../utils/buildAIPrompt';
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODEL = 'meta-llama/llama-4-scout-17b-16e-instruct';
 
-async function callGeminiDirect(prompt: string) {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  if (!apiKey || apiKey === 'your_gemini_api_key_here') {
-    throw new Error('API key de Gemini no configurada. Configura VITE_GEMINI_API_KEY en .env.local');
+async function callGroqDirect(prompt: string) {
+  const apiKey = import.meta.env.VITE_GROQ_API_KEY;
+  if (!apiKey || apiKey === 'your_groq_api_key_here') {
+    throw new Error('API key de Groq no configurada. Configura VITE_GROQ_API_KEY en .env.local');
   }
 
-  const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+  const response = await fetch(GROQ_API_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
     body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: {
-        temperature: 0.3,
-        maxOutputTokens: 2048,
-      },
+      model: GROQ_MODEL,
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.3,
+      max_tokens: 2048,
     }),
   });
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(`Error de API Gemini: ${response.status} - ${errorData?.error?.message || 'Error desconocido'}`);
+    throw new Error(`Error de API Groq: ${response.status} - ${errorData?.error?.message || 'Error desconocido'}`);
   }
 
   return response.json();
 }
 
-async function callGeminiProxy(prompt: string) {
+async function callGroqProxy(prompt: string) {
   const response = await fetch('/api/analyze', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -44,15 +47,24 @@ async function callGeminiProxy(prompt: string) {
   return response.json();
 }
 
+function extractText(data: any, isDev: boolean): string {
+  if (isDev) {
+    // Groq direct: OpenAI-compatible format
+    return data.choices?.[0]?.message?.content || '';
+  }
+  // Proxy returns same format
+  return data.choices?.[0]?.message?.content || '';
+}
+
 export async function analyzeInspection(formData: InspectionFormData): Promise<AIAnalysis> {
   const prompt = buildAIPrompt(formData);
 
   const isDev = import.meta.env.DEV;
   const data = isDev
-    ? await callGeminiDirect(prompt)
-    : await callGeminiProxy(prompt);
+    ? await callGroqDirect(prompt)
+    : await callGroqProxy(prompt);
 
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  const text = extractText(data, isDev);
 
   if (!text) {
     throw new Error('La API no devolvió contenido');
