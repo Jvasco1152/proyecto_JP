@@ -1,6 +1,6 @@
 import {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
-  WidthType, AlignmentType, HeadingLevel, BorderStyle, ImageRun,
+  WidthType, AlignmentType, HeadingLevel, ImageRun,
   TableLayoutType, ShadingType,
 } from 'docx';
 import { saveAs } from 'file-saver';
@@ -72,10 +72,6 @@ function createInfoRow(label: string, value: string): TableRow {
   });
 }
 
-function noBorders() {
-  const none = { style: BorderStyle.NONE, size: 0, color: COLORS.white };
-  return { top: none, bottom: none, left: none, right: none };
-}
 
 async function collectPhotos(formData: InspectionFormData): Promise<Record<string, Uint8Array>> {
   const photos: Record<string, Uint8Array> = {};
