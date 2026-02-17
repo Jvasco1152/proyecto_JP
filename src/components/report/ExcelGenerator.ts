@@ -53,18 +53,14 @@ function cellBorder(): Partial<ExcelJS.Borders> {
   };
 }
 
-async function collectPhotoBuffers(formData: InspectionFormData): Promise<Record<string, Uint8Array>> {
-  const photos: Record<string, Uint8Array> = {};
+async function collectPhotoBase64(formData: InspectionFormData): Promise<Record<string, string>> {
+  const photos: Record<string, string> = {};
   for (const item of Object.values(formData.sections)) {
     for (const photoId of item.photoIds) {
       const base64 = await getPhotoBase64(photoId);
       if (base64) {
         const dataUrl = base64.startsWith('data:') ? base64 : `data:image/jpeg;base64,${base64}`;
-        const raw = dataUrl.split(',')[1];
-        const binary = atob(raw);
-        const bytes = new Uint8Array(binary.length);
-        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-        photos[photoId] = bytes;
+        photos[photoId] = dataUrl.split(',')[1];
       }
     }
   }
@@ -74,7 +70,7 @@ async function collectPhotoBuffers(formData: InspectionFormData): Promise<Record
 export async function generateExcelReport(formData: InspectionFormData) {
   const scores = calculateSectionScores(formData);
   const overall = calculateOverallScore(formData);
-  const photos = await collectPhotoBuffers(formData);
+  const photos = await collectPhotoBase64(formData);
 
   const workbook = new ExcelJS.Workbook();
   workbook.creator = 'Auditor JP';
@@ -241,7 +237,7 @@ export async function generateExcelReport(formData: InspectionFormData) {
         if (!photos[photoId]) continue;
 
         const imageId = workbook.addImage({
-          buffer: photos[photoId] as unknown as Buffer,
+          base64: photos[photoId],
           extension: 'jpeg',
         });
 
