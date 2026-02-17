@@ -5,6 +5,7 @@ import { useFormPersistence, getDefaultFormData } from '../../hooks/useFormPersi
 import { useAIAnalysis } from '../../hooks/useAIAnalysis';
 import { clearAllPhotos } from '../../hooks/usePhotoCapture';
 import { generateWordReport } from '../report/WordGenerator';
+import { generateExcelReport } from '../report/ExcelGenerator';
 import ProgressBar from '../ui/ProgressBar';
 import Button from '../ui/Button';
 import StepHeader from './StepHeader';
@@ -26,6 +27,7 @@ export default function WizardLayout() {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<InspectionFormData>(getDefaultFormData());
   const [reportLoading, setReportLoading] = useState(false);
+  const [excelLoading, setExcelLoading] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   const { clearSavedData } = useFormPersistence(formData, setFormData);
@@ -62,6 +64,18 @@ export default function WizardLayout() {
       setReportLoading(false);
     }
   }, [formData, analysis]);
+
+  const handleGenerateExcel = useCallback(async () => {
+    setExcelLoading(true);
+    try {
+      await generateExcelReport(formData);
+    } catch (err) {
+      console.error('Error generating Excel:', err);
+      alert('Error al generar Excel: ' + (err instanceof Error ? err.message : 'Error desconocido'));
+    } finally {
+      setExcelLoading(false);
+    }
+  }, [formData]);
 
   const canGoNext = () => {
     if (currentStep === 0) {
@@ -115,6 +129,8 @@ export default function WizardLayout() {
           onAnalyze={handleAnalyze}
           onGenerateReport={handleGenerateReport}
           reportLoading={reportLoading}
+          onGenerateExcel={handleGenerateExcel}
+          excelLoading={excelLoading}
         />
       );
     }

@@ -1,7 +1,7 @@
 import {
   CheckCircle2, XCircle, AlertTriangle, TrendingUp,
   FileText, Sparkles, Download, RefreshCw, Shield,
-  AlertCircle,
+  AlertCircle, Table,
 } from 'lucide-react';
 import type { InspectionFormData, AIAnalysis } from '../../types/inspection';
 import { calculateSectionScores, calculateOverallScore } from '../../utils/calculateScores';
@@ -15,6 +15,8 @@ interface StepReviewProps {
   onAnalyze: () => void;
   onGenerateReport: () => void;
   reportLoading: boolean;
+  onGenerateExcel: () => void;
+  excelLoading: boolean;
 }
 
 const riskColors: Record<string, { bg: string; text: string; label: string }> = {
@@ -32,6 +34,8 @@ export default function StepReview({
   onAnalyze,
   onGenerateReport,
   reportLoading,
+  onGenerateExcel,
+  excelLoading,
 }: StepReviewProps) {
   const scores = calculateSectionScores(formData);
   const overall = calculateOverallScore(formData);
@@ -208,16 +212,28 @@ export default function StepReview({
         )}
       </div>
 
-      {/* Generate Word Report */}
-      <Button
-        onClick={onGenerateReport}
-        loading={reportLoading}
-        icon={<Download className="w-4 h-4" />}
-        size="lg"
-        className="w-full"
-      >
-        Descargar Informe Word
-      </Button>
+      {/* Generate Reports */}
+      <div className="space-y-2">
+        <Button
+          onClick={onGenerateReport}
+          loading={reportLoading}
+          icon={<Download className="w-4 h-4" />}
+          size="lg"
+          className="w-full"
+        >
+          Descargar Informe Word
+        </Button>
+        <Button
+          onClick={onGenerateExcel}
+          loading={excelLoading}
+          icon={<Table className="w-4 h-4" />}
+          size="lg"
+          variant="secondary"
+          className="w-full"
+        >
+          Descargar Excel
+        </Button>
+      </div>
     </div>
   );
 }
