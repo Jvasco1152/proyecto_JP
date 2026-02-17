@@ -256,7 +256,7 @@ export async function generateExcelReport(formData: InspectionFormData) {
   }
 
   // ===== GENERAR Y DESCARGAR =====
-  const buffer = await workbook.xlsx.writeBuffer();
+  const buffer = await workbook.xlsx.writeBuffer() as unknown as ArrayBuffer;
   const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
   const fileName = `Auditoria_${formData.header.copropiedad?.replace(/\s+/g, '_') || 'Inspeccion'}_${formData.header.fecha}.xlsx`;
   saveAs(blob, fileName);
