@@ -53,8 +53,8 @@ function cellBorder(): Partial<ExcelJS.Borders> {
   };
 }
 
-async function collectPhotoBuffers(formData: InspectionFormData): Promise<Record<string, Buffer>> {
-  const photos: Record<string, Buffer> = {};
+async function collectPhotoBuffers(formData: InspectionFormData): Promise<Record<string, Uint8Array>> {
+  const photos: Record<string, Uint8Array> = {};
   for (const item of Object.values(formData.sections)) {
     for (const photoId of item.photoIds) {
       const base64 = await getPhotoBase64(photoId);
@@ -64,7 +64,7 @@ async function collectPhotoBuffers(formData: InspectionFormData): Promise<Record
         const binary = atob(raw);
         const bytes = new Uint8Array(binary.length);
         for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-        photos[photoId] = Buffer.from(bytes);
+        photos[photoId] = bytes;
       }
     }
   }
@@ -241,7 +241,7 @@ export async function generateExcelReport(formData: InspectionFormData) {
         if (!photos[photoId]) continue;
 
         const imageId = workbook.addImage({
-          buffer: photos[photoId],
+          buffer: photos[photoId] as unknown as Buffer,
           extension: 'jpeg',
         });
 
