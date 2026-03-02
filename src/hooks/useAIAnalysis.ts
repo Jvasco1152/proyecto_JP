@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { AIAnalysis, InspectionFormData } from '../types/inspection';
+import type { AIAnalysis, InspectionFormData, InspectionSectionDef } from '../types/inspection';
 import { analyzeInspection } from '../services/aiService';
 
 export function useAIAnalysis() {
@@ -7,11 +7,11 @@ export function useAIAnalysis() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const analyze = useCallback(async (formData: InspectionFormData) => {
+  const analyze = useCallback(async (formData: InspectionFormData, sections: InspectionSectionDef[]) => {
     setLoading(true);
     setError(null);
     try {
-      const result = await analyzeInspection(formData);
+      const result = await analyzeInspection(formData, sections);
       setAnalysis(result);
       return result;
     } catch (err) {

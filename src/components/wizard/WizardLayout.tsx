@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
-import type { InspectionFormData, InspectionItemData } from '../../types/inspection';
+import { ChevronLeft, ChevronRight, RotateCcw, LogOut } from 'lucide-react';
+import type { FormType, InspectionFormData, InspectionItemData } from '../../types/inspection';
+import { formRegistry } from '../../data/formRegistry';
 import { useFormPersistence, getDefaultFormData } from '../../hooks/useFormPersistence';
 import { useAIAnalysis } from '../../hooks/useAIAnalysis';
 import { clearAllPhotos } from '../../hooks/usePhotoCapture';
@@ -13,17 +14,15 @@ import StepInspectionGroup from './StepInspectionGroup';
 import StepComentarios from './StepComentarios';
 import StepReview from './StepReview';
 
-const STEP_LABELS = [
-  'Datos', 'Seguridad', 'Aseo', 'Infraestr.', 'Proyectos',
-  'Comunic.', 'Serv.Púb.', 'Conviv.', 'Coment.', 'Informe',
-];
+interface WizardLayoutProps {
+  formType: FormType;
+  onBack: () => void;
+  onLogout: () => void;
+}
 
-const SECTION_IDS = [
-  'seguridad', 'aseo', 'infraestructura', 'proyectos',
-  'comunicacion', 'servicios_publicos', 'convivencia',
-];
+export default function WizardLayout({ formType, onBack, onLogout }: WizardLayoutProps) {
+  const { sections, stepLabels, shortTitle } = formRegistry[formType];
 
-export default function WizardLayout() {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<InspectionFormData>(getDefaultFormData());
   const [reportLoading, setReportLoading] = useState(false);
@@ -32,6 +31,11 @@ export default function WizardLayout() {
 
   const { clearSavedData } = useFormPersistence(formData, setFormData);
   const { analysis, loading: aiLoading, error: aiError, analyze, reset: resetAI } = useAIAnalysis();
+
+  // Step indices: 0=Datos, 1..N=sections, N+1=Comentarios, N+2=Informe
+  const LAST_SECTION_STEP = sections.length;
+  const COMMENT_STEP = sections.length + 1;
+  const REVIEW_STEP = sections.length + 2;
 
   const handleItemChange = useCallback((itemId: string, data: InspectionItemData) => {
     setFormData(prev => ({
@@ -43,39 +47,38 @@ export default function WizardLayout() {
   const handleReset = useCallback(async () => {
     clearSavedData();
     await clearAllPhotos();
-    setFormData(getDefaultFormData());
     resetAI();
-    setCurrentStep(0);
     setShowResetConfirm(false);
-  }, [clearSavedData, resetAI]);
+    onBack();
+  }, [clearSavedData, resetAI, onBack]);
 
   const handleAnalyze = useCallback(() => {
-    analyze(formData);
-  }, [analyze, formData]);
+    analyze(formData, sections);
+  }, [analyze, formData, sections]);
 
   const handleGenerateReport = useCallback(async () => {
     setReportLoading(true);
     try {
-      await generateWordReport(formData, analysis);
+      await generateWordReport(formData, analysis, sections);
     } catch (err) {
       console.error('Error generating report:', err);
       alert('Error al generar informe: ' + (err instanceof Error ? err.message : 'Error desconocido'));
     } finally {
       setReportLoading(false);
     }
-  }, [formData, analysis]);
+  }, [formData, analysis, sections]);
 
   const handleGenerateExcel = useCallback(async () => {
     setExcelLoading(true);
     try {
-      await generateExcelReport(formData);
+      await generateExcelReport(formData, sections);
     } catch (err) {
       console.error('Error generating Excel:', err);
       alert('Error al generar Excel: ' + (err instanceof Error ? err.message : 'Error desconocido'));
     } finally {
       setExcelLoading(false);
     }
-  }, [formData]);
+  }, [formData, sections]);
 
   const canGoNext = () => {
     if (currentStep === 0) {
@@ -96,20 +99,20 @@ export default function WizardLayout() {
       );
     }
 
-    // Steps 1-7: Inspection groups
-    if (currentStep >= 1 && currentStep <= 7) {
-      const sectionId = SECTION_IDS[currentStep - 1];
+    // Steps 1..N: Inspection groups
+    if (currentStep >= 1 && currentStep <= LAST_SECTION_STEP) {
+      const section = sections[currentStep - 1];
       return (
         <StepInspectionGroup
-          sectionId={sectionId}
+          section={section}
           items={formData.sections}
           onItemChange={handleItemChange}
         />
       );
     }
 
-    // Step 8: Comments
-    if (currentStep === 8) {
+    // Comments step
+    if (currentStep === COMMENT_STEP) {
       return (
         <StepComentarios
           comentarios={formData.comentarios}
@@ -118,11 +121,12 @@ export default function WizardLayout() {
       );
     }
 
-    // Step 9: Review
-    if (currentStep === 9) {
+    // Review step
+    if (currentStep === REVIEW_STEP) {
       return (
         <StepReview
           formData={formData}
+          sections={sections}
           analysis={analysis}
           aiLoading={aiLoading}
           aiError={aiError}
@@ -145,15 +149,24 @@ export default function WizardLayout() {
         <div className="flex items-center justify-between max-w-lg mx-auto">
           <div>
             <h1 className="text-lg font-bold tracking-tight">Auditor JP</h1>
-            <p className="text-primary-200 text-xs">Inspección de Copropiedades</p>
+            <p className="text-primary-200 text-xs">{shortTitle}</p>
           </div>
-          <button
-            onClick={() => setShowResetConfirm(true)}
-            className="p-2 rounded-lg hover:bg-primary-700 transition-colors"
-            title="Nueva inspección"
-          >
-            <RotateCcw className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setShowResetConfirm(true)}
+              className="p-2 rounded-lg hover:bg-primary-700 transition-colors"
+              title="Cambiar formulario"
+            >
+              <RotateCcw className="w-5 h-5" />
+            </button>
+            <button
+              onClick={onLogout}
+              className="p-2 rounded-lg hover:bg-primary-700 transition-colors"
+              title="Cerrar sesión"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -162,8 +175,8 @@ export default function WizardLayout() {
         <div className="max-w-lg mx-auto">
           <ProgressBar
             currentStep={currentStep}
-            totalSteps={STEP_LABELS.length}
-            labels={STEP_LABELS}
+            totalSteps={stepLabels.length}
+            labels={stepLabels}
           />
         </div>
       </div>
@@ -186,7 +199,7 @@ export default function WizardLayout() {
               Anterior
             </Button>
           )}
-          {currentStep < STEP_LABELS.length - 1 && (
+          {currentStep < stepLabels.length - 1 && (
             <Button
               onClick={() => setCurrentStep(s => s + 1)}
               disabled={!canGoNext()}
@@ -203,9 +216,9 @@ export default function WizardLayout() {
       {showResetConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
           <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl">
-            <h3 className="text-lg font-bold text-slate-900 mb-2">Nueva inspección</h3>
+            <h3 className="text-lg font-bold text-slate-900 mb-2">Cambiar formulario</h3>
             <p className="text-sm text-slate-600 mb-4">
-              Se borrarán todos los datos y fotos de la inspección actual. Esta acción no se puede deshacer.
+              Se borrarán todos los datos y fotos de la inspección actual y regresarás a la pantalla de selección. Esta acción no se puede deshacer.
             </p>
             <div className="flex gap-3">
               <Button variant="secondary" onClick={() => setShowResetConfirm(false)} className="flex-1">

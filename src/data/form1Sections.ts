@@ -1,0 +1,186 @@
+import type { InspectionSectionDef } from '../types/inspection';
+
+export const form1Sections: InspectionSectionDef[] = [
+  {
+    id: 'f1_seguridad',
+    title: 'Seguridad',
+    description: 'Protocolos operativos, seguridad humana y señalética',
+    stepLabel: 'Seguridad',
+    items: [
+      {
+        id: 'f1_seg_01',
+        label: 'Protocolos y Personal',
+        criterio: 'Verificar capacitación en "Hotelería Ocasional" (Manual 5.4), registro de sospechosos, control de libros de portería (ingresos/salidas) y porte de uniforme/dotación',
+        frecuencia: 'Mensual',
+        allowNA: false,
+      },
+      {
+        id: 'f1_seg_02',
+        label: 'Seguridad Humana',
+        criterio: 'Inspección de extintores (presión, faja, vencimiento) y red de incendios (gabinetes completos). Verificación de botiquines (dotación legal completa, sin vencidos)',
+        frecuencia: 'Mensual',
+        allowNA: false,
+      },
+      {
+        id: 'f1_seg_03',
+        label: 'Señalética',
+        criterio: 'Estado de señales fotoluminiscentes de evacuación, avisos de videovigilancia y cumplimiento de la Ley de espacio libre de humo',
+        frecuencia: 'Trimestral',
+        allowNA: false,
+      },
+    ],
+  },
+  {
+    id: 'f1_aseo',
+    title: 'Aseo y Químicos',
+    description: 'Estado de limpieza de zonas comunes y manejo de insumos químicos',
+    stepLabel: 'Aseo',
+    items: [
+      {
+        id: 'f1_ase_01',
+        label: 'Zonas Comunes (Puntos Fijos)',
+        criterio: 'Limpieza profunda de muros, puertas, vidrios, escalas y techos (telarañas). Estado estético de bancas y postes',
+        frecuencia: 'Mensual',
+        allowNA: false,
+      },
+      {
+        id: 'f1_ase_02',
+        label: 'Cuarto de Basuras',
+        criterio: 'Evaluación de orden, ventilación, limpieza de paredes/pisos y funcionamiento de desagües. Ausencia de elementos ajenos a la basura',
+        frecuencia: 'Mensual',
+        allowNA: false,
+      },
+      {
+        id: 'f1_ase_03',
+        label: 'Insumos Químicos y Aseo',
+        criterio: 'Rotulación obligatoria (nombre, lote, vencimiento). Existencia física de Matriz de Compatibilidad y Fichas de Seguridad (MSDS) en el sitio de almacenamiento',
+        frecuencia: 'Trimestral',
+        allowNA: false,
+      },
+    ],
+  },
+  {
+    id: 'f1_infraestructura',
+    title: 'Infraestructura y Mantenimiento',
+    description: 'Estado físico de instalaciones, equipos y zonas de la copropiedad',
+    stepLabel: 'Infraestr.',
+    items: [
+      {
+        id: 'f1_inf_01',
+        label: 'Cuartos Técnicos',
+        criterio: 'Limpieza y despeje total de plantas eléctricas, bombas de agua, pozos e hidroflo. Sin filtraciones ni materiales acumulados',
+        frecuencia: 'Mensual',
+        allowNA: false,
+      },
+      {
+        id: 'f1_inf_02',
+        label: 'Zonas Húmedas (Piscinas/Jacuzzis)',
+        criterio: 'Libro de registro diario (pH/Cloro), exámenes publicados, certificados vigentes (piscinero/admin) y kit de emergencia (gancho, salvavidas, camilla, alarma)',
+        frecuencia: 'Mensual',
+        allowNA: true,
+      },
+      {
+        id: 'f1_inf_03',
+        label: 'Iluminación',
+        criterio: 'Funcionamiento de luminarias en pasillos, parqueaderos y exteriores. Limpieza de caperuzas y difusores',
+        frecuencia: 'Mensual',
+        allowNA: false,
+      },
+      {
+        id: 'f1_inf_04',
+        label: 'Zonas de Esparcimiento',
+        criterio: 'Seguridad física de juegos infantiles, máquinas de gimnasio, mallas de canchas y estado de jardines/zonas verdes',
+        frecuencia: 'Trimestral',
+        allowNA: true,
+      },
+      {
+        id: 'f1_inf_05',
+        label: 'Parqueaderos',
+        criterio: 'Demarcación y respeto de celdas para personas con movilidad reducida (Normatividad de accesibilidad)',
+        frecuencia: 'Trimestral',
+        allowNA: true,
+      },
+    ],
+  },
+  {
+    id: 'f1_proyectos',
+    title: 'Gestión y Proyectos',
+    description: 'Supervisión de obras y contratistas en ejecución',
+    stepLabel: 'Proyectos',
+    items: [
+      {
+        id: 'f1_pry_01',
+        label: 'Obras Especiales y Proyectos',
+        criterio: 'Supervisión de contratistas en ejecución: uso de EPP, delimitación de áreas con cinta, orden de materiales y retiro de escombros',
+        frecuencia: 'Según necesidad',
+        allowNA: true,
+      },
+    ],
+  },
+  {
+    id: 'f1_comunicacion',
+    title: 'Comunicación y Documentación',
+    description: 'Disponibilidad documental y actualización de carteleras',
+    stepLabel: 'Comunic.',
+    items: [
+      {
+        id: 'f1_com_01',
+        label: 'Informes y Gestión Documental',
+        criterio: 'Disponibilidad en portería del Manual de Convivencia, Plan de Emergencias y PMIRS para consulta inmediata',
+        frecuencia: 'Mensual',
+        allowNA: false,
+      },
+      {
+        id: 'f1_com_02',
+        label: 'Carteleras y Avisos',
+        criterio: 'Actualización de información. Retiro de publicidad vieja y verificación de envío de circulares informativas',
+        frecuencia: 'Mensual',
+        allowNA: false,
+      },
+    ],
+  },
+  {
+    id: 'f1_servicios_publicos',
+    title: 'Control de Servicios Públicos',
+    description: 'Seguimiento a consumos y sistemas de agua',
+    stepLabel: 'Serv.Púb.',
+    items: [
+      {
+        id: 'f1_ssp_01',
+        label: 'Bitácora SSPP',
+        criterio: 'Verificación del registro diario de lecturas de contadores (agua y luz) para análisis de variaciones o fugas (Manual de Operaciones)',
+        frecuencia: 'Mensual',
+        allowNA: false,
+      },
+      {
+        id: 'f1_ssp_02',
+        label: 'Sistemas de Agua',
+        criterio: 'Verificación de fecha de lavado de tanques (semestral) y prueba funcional de bombas de succión/impulsión',
+        frecuencia: 'Semestral',
+        allowNA: false,
+      },
+    ],
+  },
+  {
+    id: 'f1_convivencia',
+    title: 'Convivencia y Personal',
+    description: 'Seguimiento de convivencia y bienestar del personal',
+    stepLabel: 'Conviv.',
+    items: [
+      {
+        id: 'f1_cnv_01',
+        label: 'Normas y Copropietarios',
+        criterio: 'Seguimiento a casos de convivencia reportados y contacto del administrador con los residentes según el RPH',
+        frecuencia: 'Mensual',
+        allowNA: false,
+      },
+      {
+        id: 'f1_cnv_02',
+        label: 'Bienestar Laboral (Cuarto de personal)',
+        criterio: 'Condiciones de dignidad: lockers funcionales, limpieza del baño de empleados, orden y seguridad del espacio de descanso',
+        frecuencia: 'Trimestral',
+        allowNA: false,
+      },
+    ],
+  },
+];

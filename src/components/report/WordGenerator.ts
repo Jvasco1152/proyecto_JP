@@ -4,8 +4,7 @@ import {
   TableLayoutType, ShadingType,
 } from 'docx';
 import { saveAs } from 'file-saver';
-import type { InspectionFormData, AIAnalysis } from '../../types/inspection';
-import { inspectionSections } from '../../data/inspectionSections';
+import type { InspectionFormData, AIAnalysis, InspectionSectionDef } from '../../types/inspection';
 import { calculateSectionScores, calculateOverallScore } from '../../utils/calculateScores';
 import { STATUS_LABELS } from '../../utils/reportStyles';
 import { getPhotoBase64 } from '../../hooks/usePhotoCapture';
@@ -91,32 +90,36 @@ async function collectPhotos(formData: InspectionFormData): Promise<Record<strin
   return photos;
 }
 
-export async function generateWordReport(formData: InspectionFormData, analysis: AIAnalysis | null) {
-  const scores = calculateSectionScores(formData);
-  const overall = calculateOverallScore(formData);
+export async function generateWordReport(
+  formData: InspectionFormData,
+  analysis: AIAnalysis | null,
+  sections: InspectionSectionDef[],
+) {
+  const scores = calculateSectionScores(formData, sections);
+  const overall = calculateOverallScore(formData, sections);
   const photos = await collectPhotos(formData);
 
-  const sections: Paragraph[] = [];
+  const docSections: Paragraph[] = [];
 
   // ===== PORTADA =====
-  sections.push(spacer(), spacer(), spacer());
-  sections.push(new Paragraph({
+  docSections.push(spacer(), spacer(), spacer());
+  docSections.push(new Paragraph({
     alignment: AlignmentType.CENTER,
     children: [new TextRun({ text: 'INFORME DE AUDITORÍA', bold: true, size: 52, color: COLORS.primary })],
   }));
-  sections.push(new Paragraph({
+  docSections.push(new Paragraph({
     alignment: AlignmentType.CENTER,
     children: [new TextRun({ text: 'Inspección y Supervisión Integral', size: 28, color: COLORS.gray })],
   }));
-  sections.push(spacer());
-  sections.push(new Paragraph({
+  docSections.push(spacer());
+  docSections.push(new Paragraph({
     alignment: AlignmentType.CENTER,
     children: [new TextRun({ text: formData.header.copropiedad || 'Copropiedad', bold: true, size: 36, color: COLORS.black })],
   }));
-  sections.push(spacer());
+  docSections.push(spacer());
 
   // Info table
-  sections.push(new Paragraph({ children: [] }));
+  docSections.push(new Paragraph({ children: [] }));
   const infoTable = new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
     layout: TableLayoutType.FIXED,
@@ -228,7 +231,7 @@ export async function generateWordReport(formData: InspectionFormData, analysis:
   detailSections.push(heading('DETALLE POR SECCIÓN'));
   detailSections.push(spacer());
 
-  for (const section of inspectionSections) {
+  for (const section of sections) {
     detailSections.push(heading(section.title.toUpperCase(), HeadingLevel.HEADING_2));
     detailSections.push(new Paragraph({
       children: [new TextRun({ text: section.description, size: 20, italics: true, color: COLORS.gray })],
@@ -339,7 +342,7 @@ export async function generateWordReport(formData: InspectionFormData, analysis:
           page: { margin: { top: 1000, right: 1000, bottom: 1000, left: 1000 } },
         },
         children: [
-          ...sections,
+          ...docSections,
           infoTable as unknown as Paragraph,
           overallParagraph,
           ...aiSections,

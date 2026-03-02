@@ -1,4 +1,4 @@
-import type { AIAnalysis, InspectionFormData } from '../types/inspection';
+import type { AIAnalysis, InspectionFormData, InspectionSectionDef } from '../types/inspection';
 import { buildAIPrompt } from '../utils/buildAIPrompt';
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
@@ -49,15 +49,16 @@ async function callGroqProxy(prompt: string) {
 
 function extractText(data: any, isDev: boolean): string {
   if (isDev) {
-    // Groq direct: OpenAI-compatible format
     return data.choices?.[0]?.message?.content || '';
   }
-  // Proxy returns same format
   return data.choices?.[0]?.message?.content || '';
 }
 
-export async function analyzeInspection(formData: InspectionFormData): Promise<AIAnalysis> {
-  const prompt = buildAIPrompt(formData);
+export async function analyzeInspection(
+  formData: InspectionFormData,
+  sections: InspectionSectionDef[],
+): Promise<AIAnalysis> {
+  const prompt = buildAIPrompt(formData, sections);
 
   const isDev = import.meta.env.DEV;
   const data = isDev
@@ -70,7 +71,6 @@ export async function analyzeInspection(formData: InspectionFormData): Promise<A
     throw new Error('La API no devolvió contenido');
   }
 
-  // Extract JSON from potential markdown wrapping
   let jsonText = text.trim();
   if (jsonText.startsWith('```')) {
     jsonText = jsonText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '');

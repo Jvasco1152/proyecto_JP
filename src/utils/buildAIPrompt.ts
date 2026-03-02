@@ -1,10 +1,9 @@
-import type { InspectionFormData } from '../types/inspection';
-import { inspectionSections } from '../data/inspectionSections';
+import type { InspectionFormData, InspectionSectionDef } from '../types/inspection';
 import { calculateSectionScores, calculateOverallScore } from './calculateScores';
 
-export function buildAIPrompt(formData: InspectionFormData): string {
-  const scores = calculateSectionScores(formData);
-  const overall = calculateOverallScore(formData);
+export function buildAIPrompt(formData: InspectionFormData, sections: InspectionSectionDef[]): string {
+  const scores = calculateSectionScores(formData, sections);
+  const overall = calculateOverallScore(formData, sections);
 
   let prompt = `Eres un experto en administración de copropiedades en Colombia (Ley 675 de 2001). Analiza los siguientes resultados de una auditoría de inspección y genera un informe profesional.
 
@@ -20,7 +19,7 @@ ESCALA DE EVALUACIÓN:
 - No Cumple (NC) = 0% - El ítem no cumple los criterios
 - No Aplica (NA) = Excluido del cálculo
 
-RESULTADOS POR SECCIÓN (7 grupos):
+RESULTADOS POR SECCIÓN (${sections.length} grupos):
 `;
 
   scores.forEach(score => {
@@ -31,7 +30,7 @@ RESULTADOS POR SECCIÓN (7 grupos):
 
   prompt += `\n\nDETALLE DE HALLAZGOS:`;
 
-  inspectionSections.forEach(section => {
+  sections.forEach(section => {
     const itemsWithIssues = section.items.filter(item => {
       const data = formData.sections[item.id];
       return data && (data.status === 'no_cumple' || data.status === 'cumple_parcial' || (data.observation && data.observation.trim()));

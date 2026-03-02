@@ -1,4 +1,5 @@
 export type ComplianceStatus = 'cumple' | 'cumple_parcial' | 'no_cumple' | 'no_aplica' | null;
+export type FormType = 'gestion_operativa' | 'unificada_completa' | 'auditoria_norma';
 
 export interface InspectionItemData {
   id: string;
@@ -19,6 +20,7 @@ export interface InspectionSectionDef {
   id: string;
   title: string;
   description: string;
+  stepLabel: string;
   items: InspectionItemDef[];
 }
 

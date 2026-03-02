@@ -3,12 +3,13 @@ import {
   FileText, Sparkles, Download, RefreshCw, Shield,
   AlertCircle, Table,
 } from 'lucide-react';
-import type { InspectionFormData, AIAnalysis } from '../../types/inspection';
+import type { InspectionFormData, AIAnalysis, InspectionSectionDef } from '../../types/inspection';
 import { calculateSectionScores, calculateOverallScore } from '../../utils/calculateScores';
 import Button from '../ui/Button';
 
 interface StepReviewProps {
   formData: InspectionFormData;
+  sections: InspectionSectionDef[];
   analysis: AIAnalysis | null;
   aiLoading: boolean;
   aiError: string | null;
@@ -28,6 +29,7 @@ const riskColors: Record<string, { bg: string; text: string; label: string }> = 
 
 export default function StepReview({
   formData,
+  sections,
   analysis,
   aiLoading,
   aiError,
@@ -37,8 +39,8 @@ export default function StepReview({
   onGenerateExcel,
   excelLoading,
 }: StepReviewProps) {
-  const scores = calculateSectionScores(formData);
-  const overall = calculateOverallScore(formData);
+  const scores = calculateSectionScores(formData, sections);
+  const overall = calculateOverallScore(formData, sections);
 
   const scoreColor = overall >= 80 ? 'text-green-600' : overall >= 60 ? 'text-yellow-600' : 'text-red-600';
   const scoreBg = overall >= 80 ? 'bg-green-50 border-green-200' : overall >= 60 ? 'bg-yellow-50 border-yellow-200' : 'bg-red-50 border-red-200';

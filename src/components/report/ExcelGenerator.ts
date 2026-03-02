@@ -1,7 +1,6 @@
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
-import type { InspectionFormData } from '../../types/inspection';
-import { inspectionSections } from '../../data/inspectionSections';
+import type { InspectionFormData, InspectionSectionDef } from '../../types/inspection';
 import { calculateSectionScores, calculateOverallScore } from '../../utils/calculateScores';
 import { STATUS_LABELS } from '../../utils/reportStyles';
 import { getPhotoBase64 } from '../../hooks/usePhotoCapture';
@@ -67,9 +66,9 @@ async function collectPhotoBase64(formData: InspectionFormData): Promise<Record<
   return photos;
 }
 
-export async function generateExcelReport(formData: InspectionFormData) {
-  const scores = calculateSectionScores(formData);
-  const overall = calculateOverallScore(formData);
+export async function generateExcelReport(formData: InspectionFormData, sections: InspectionSectionDef[]) {
+  const scores = calculateSectionScores(formData, sections);
+  const overall = calculateOverallScore(formData, sections);
   const photos = await collectPhotoBase64(formData);
 
   const workbook = new ExcelJS.Workbook();
@@ -132,7 +131,7 @@ export async function generateExcelReport(formData: InspectionFormData) {
   // ===== HOJA 2: Resumen =====
   const wsResumen = workbook.addWorksheet('Resumen');
   wsResumen.columns = [
-    { width: 25 },
+    { width: 30 },
     { width: 12 },
     { width: 12 },
     { width: 12 },
@@ -205,7 +204,7 @@ export async function generateExcelReport(formData: InspectionFormData) {
 
   let currentRow = 2;
 
-  for (const section of inspectionSections) {
+  for (const section of sections) {
     for (const item of section.items) {
       const data = formData.sections[item.id];
       const status = data?.status ? (STATUS_LABELS[data.status] || '—') : 'Sin evaluar';

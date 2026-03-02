@@ -1,16 +1,13 @@
-import type { InspectionItemData } from '../../types/inspection';
-import { inspectionSections } from '../../data/inspectionSections';
+import type { InspectionItemData, InspectionSectionDef } from '../../types/inspection';
 import InspectionSection from '../inspection/InspectionSection';
 
 interface StepInspectionGroupProps {
-  sectionId: string;
+  section: InspectionSectionDef;
   items: Record<string, InspectionItemData>;
   onItemChange: (itemId: string, data: InspectionItemData) => void;
 }
 
-export default function StepInspectionGroup({ sectionId, items, onItemChange }: StepInspectionGroupProps) {
-  const section = inspectionSections.find(s => s.id === sectionId)!;
-
+export default function StepInspectionGroup({ section, items, onItemChange }: StepInspectionGroupProps) {
   return (
     <InspectionSection
       section={section}

@@ -3,7 +3,7 @@ import type { InspectionFormData } from '../types/inspection';
 
 const STORAGE_KEY = 'auditor_jp_form_data';
 const STORAGE_VERSION_KEY = 'auditor_jp_form_version';
-const CURRENT_VERSION = 2; // v2: 17 items / 7 groups / cumple_parcial
+const CURRENT_VERSION = 3; // v3: multi-form with form-specific item IDs
 const SAVE_DEBOUNCE_MS = 500;
 
 export function getDefaultFormData(): InspectionFormData {

@@ -1,8 +1,10 @@
-import type { InspectionFormData, SectionScore } from '../types/inspection';
-import { inspectionSections } from '../data/inspectionSections';
+import type { InspectionFormData, InspectionSectionDef, SectionScore } from '../types/inspection';
 
-export function calculateSectionScores(formData: InspectionFormData): SectionScore[] {
-  return inspectionSections.map(section => {
+export function calculateSectionScores(
+  formData: InspectionFormData,
+  sections: InspectionSectionDef[],
+): SectionScore[] {
+  return sections.map(section => {
     let cumple = 0;
     let cumpleParcial = 0;
     let noCumple = 0;
@@ -35,8 +37,11 @@ export function calculateSectionScores(formData: InspectionFormData): SectionSco
   });
 }
 
-export function calculateOverallScore(formData: InspectionFormData): number {
-  const scores = calculateSectionScores(formData);
+export function calculateOverallScore(
+  formData: InspectionFormData,
+  sections: InspectionSectionDef[],
+): number {
+  const scores = calculateSectionScores(formData, sections);
   const totalCumple = scores.reduce((acc, s) => acc + s.cumple, 0);
   const totalParcial = scores.reduce((acc, s) => acc + s.cumpleParcial, 0);
   const totalNoCumple = scores.reduce((acc, s) => acc + s.noCumple, 0);

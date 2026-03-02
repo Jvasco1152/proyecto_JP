@@ -5,6 +5,7 @@ export const inspectionSections: InspectionSectionDef[] = [
     id: 'seguridad',
     title: 'Seguridad',
     description: 'Protocolos, personal y sistemas de seguridad',
+    stepLabel: 'Seguridad',
     items: [
       {
         id: 'seg_01',
@@ -33,6 +34,7 @@ export const inspectionSections: InspectionSectionDef[] = [
     id: 'aseo',
     title: 'Aseo y Limpieza',
     description: 'Estado de limpieza y manejo de residuos',
+    stepLabel: 'Aseo',
     items: [
       {
         id: 'ase_01',
@@ -61,6 +63,7 @@ export const inspectionSections: InspectionSectionDef[] = [
     id: 'infraestructura',
     title: 'Infraestructura',
     description: 'Estado físico de instalaciones y equipos',
+    stepLabel: 'Infraestr.',
     items: [
       {
         id: 'inf_01',
@@ -96,6 +99,7 @@ export const inspectionSections: InspectionSectionDef[] = [
     id: 'proyectos',
     title: 'Proyectos',
     description: 'Obras especiales y mejoras',
+    stepLabel: 'Proyectos',
     items: [
       {
         id: 'pry_01',
@@ -110,6 +114,7 @@ export const inspectionSections: InspectionSectionDef[] = [
     id: 'comunicacion',
     title: 'Comunicación',
     description: 'Informes de gestión y comunicaciones',
+    stepLabel: 'Comunic.',
     items: [
       {
         id: 'com_01',
@@ -131,6 +136,7 @@ export const inspectionSections: InspectionSectionDef[] = [
     id: 'servicios_publicos',
     title: 'Servicios Públicos',
     description: 'Control de servicios y sistemas de agua',
+    stepLabel: 'Serv.Púb.',
     items: [
       {
         id: 'ssp_01',
@@ -152,6 +158,7 @@ export const inspectionSections: InspectionSectionDef[] = [
     id: 'convivencia',
     title: 'Convivencia',
     description: 'Normas de convivencia y bienestar laboral',
+    stepLabel: 'Conviv.',
     items: [
       {
         id: 'cnv_01',
