@@ -404,6 +404,7 @@ Editar `src/utils/buildAIPrompt.ts`.
 | **v1.0** | Febrero 2026 | Lanzamiento inicial: 35 ítems, 3 secciones, 6 pasos, informe PDF |
 | **v2.0** | Febrero 2026 | Nueva matriz: 17 ítems, 7 grupos, 10 pasos, informe Word ejecutivo, estado "Cumple Parcial", criterios de verificación |
 | **v3.0** | Marzo 2026 | Sistema de autenticación (SHA-256), 3 formularios independientes, wizard dinámico, informe Excel, IA con Groq (Llama 4 Scout), pantalla de inicio multi-formulario |
+| **v3.1** | Marzo 2026 | Actualización Formulario 1: nueva matriz "Auditoría Interna Operaciones AY" — 8 secciones, 51 ítems (antes 7 secciones, 18 ítems) |
 
 ---
 
@@ -417,4 +418,4 @@ Editar `src/utils/buildAIPrompt.ts`.
 ---
 
 *Documento generado para el proyecto Auditor JP*
-*Última actualización: Marzo 2026*
+*Última actualización: Marzo 2026 — v3.1*
