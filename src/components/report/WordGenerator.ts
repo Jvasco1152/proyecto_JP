@@ -55,16 +55,23 @@ function spacer(): Paragraph {
   return new Paragraph({ children: [] });
 }
 
+// Ancho de contenido en twips: A4 (11906) - márgenes (1000+1000) = 9906
+const PAGE_WIDTH_DXA = 9906;
+
+const INFO_COL = [3467, 6439] as const;       // 35% / 65%
+const SCORE_COL = [3500, 1281, 1281, 1281, 1281, 1282] as const; // 6 cols
+const DETAIL_COL = [1981, 3467, 1486, 1972] as const;             // 4 cols
+
 function createInfoRow(label: string, value: string): TableRow {
   return new TableRow({
     children: [
       new TableCell({
-        width: { size: 35, type: WidthType.PERCENTAGE },
+        width: { size: INFO_COL[0], type: WidthType.DXA },
         shading: { type: ShadingType.SOLID, color: COLORS.primaryLight },
         children: [new Paragraph({ children: [new TextRun({ text: label, bold: true, size: 20, color: COLORS.primary })] })],
       }),
       new TableCell({
-        width: { size: 65, type: WidthType.PERCENTAGE },
+        width: { size: INFO_COL[1], type: WidthType.DXA },
         children: [new Paragraph({ children: [new TextRun({ text: value || '—', size: 20 })] })],
       }),
     ],
@@ -121,8 +128,9 @@ export async function generateWordReport(
   // Info table
   docSections.push(new Paragraph({ children: [] }));
   const infoTable = new Table({
-    width: { size: 100, type: WidthType.PERCENTAGE },
+    width: { size: PAGE_WIDTH_DXA, type: WidthType.DXA },
     layout: TableLayoutType.FIXED,
+    columnWidths: [...INFO_COL],
     rows: [
       createInfoRow('Fecha', formData.header.fecha),
       createInfoRow('Director', formData.header.director),
@@ -169,11 +177,13 @@ export async function generateWordReport(
     aiSections.push(heading('RESULTADOS POR SECCIÓN', HeadingLevel.HEADING_2));
     aiSections.push(spacer());
 
+    const scoreHeaders = ['Sección', 'Cumple', 'Parcial', 'No Cumple', 'N/A', '%'];
     const scoreTableRows = [
       new TableRow({
         tableHeader: true,
-        children: ['Sección', 'Cumple', 'Parcial', 'No Cumple', 'N/A', '%'].map(h =>
+        children: scoreHeaders.map((h, i) =>
           new TableCell({
+            width: { size: SCORE_COL[i], type: WidthType.DXA },
             shading: { type: ShadingType.SOLID, color: COLORS.primary },
             children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: h, bold: true, size: 18, color: COLORS.white })] })],
           })
@@ -181,19 +191,20 @@ export async function generateWordReport(
       }),
       ...scores.map(s => new TableRow({
         children: [
-          new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: s.sectionTitle, size: 18 })] })] }),
-          new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(s.cumple), size: 18, color: COLORS.success })] })] }),
-          new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(s.cumpleParcial), size: 18, color: COLORS.amber })] })] }),
-          new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(s.noCumple), size: 18, color: COLORS.danger })] })] }),
-          new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(s.noAplica), size: 18, color: COLORS.gray })] })] }),
-          new TableCell({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: `${s.porcentaje}%`, bold: true, size: 18, color: scoreColor(s.porcentaje) })] })] }),
+          new TableCell({ width: { size: SCORE_COL[0], type: WidthType.DXA }, children: [new Paragraph({ children: [new TextRun({ text: s.sectionTitle, size: 18 })] })] }),
+          new TableCell({ width: { size: SCORE_COL[1], type: WidthType.DXA }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(s.cumple), size: 18, color: COLORS.success })] })] }),
+          new TableCell({ width: { size: SCORE_COL[2], type: WidthType.DXA }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(s.cumpleParcial), size: 18, color: COLORS.amber })] })] }),
+          new TableCell({ width: { size: SCORE_COL[3], type: WidthType.DXA }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(s.noCumple), size: 18, color: COLORS.danger })] })] }),
+          new TableCell({ width: { size: SCORE_COL[4], type: WidthType.DXA }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(s.noAplica), size: 18, color: COLORS.gray })] })] }),
+          new TableCell({ width: { size: SCORE_COL[5], type: WidthType.DXA }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: `${s.porcentaje}%`, bold: true, size: 18, color: scoreColor(s.porcentaje) })] })] }),
         ],
       })),
     ];
 
     const scoreTable = new Table({
-      width: { size: 100, type: WidthType.PERCENTAGE },
+      width: { size: PAGE_WIDTH_DXA, type: WidthType.DXA },
       layout: TableLayoutType.FIXED,
+      columnWidths: [...SCORE_COL],
       rows: scoreTableRows,
     });
 
@@ -239,10 +250,12 @@ export async function generateWordReport(
     detailSections.push(spacer());
 
     // Detail table
+    const detailHeaders = ['Item', 'Criterio', 'Estado', 'Observación'];
     const headerRow = new TableRow({
       tableHeader: true,
-      children: ['Item', 'Criterio', 'Estado', 'Observación'].map(h =>
+      children: detailHeaders.map((h, i) =>
         new TableCell({
+          width: { size: DETAIL_COL[i], type: WidthType.DXA },
           shading: { type: ShadingType.SOLID, color: COLORS.primary },
           children: [new Paragraph({ children: [new TextRun({ text: h, bold: true, size: 16, color: COLORS.white })] })],
         })
@@ -258,19 +271,19 @@ export async function generateWordReport(
       return new TableRow({
         children: [
           new TableCell({
-            width: { size: 20, type: WidthType.PERCENTAGE },
+            width: { size: DETAIL_COL[0], type: WidthType.DXA },
             children: [new Paragraph({ children: [new TextRun({ text: item.label, size: 16 })] })],
           }),
           new TableCell({
-            width: { size: 35, type: WidthType.PERCENTAGE },
+            width: { size: DETAIL_COL[1], type: WidthType.DXA },
             children: [new Paragraph({ children: [new TextRun({ text: item.criterio, size: 14, color: COLORS.gray })] })],
           }),
           new TableCell({
-            width: { size: 15, type: WidthType.PERCENTAGE },
+            width: { size: DETAIL_COL[2], type: WidthType.DXA },
             children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: status, bold: true, size: 16, color })] })],
           }),
           new TableCell({
-            width: { size: 30, type: WidthType.PERCENTAGE },
+            width: { size: DETAIL_COL[3], type: WidthType.DXA },
             children: [new Paragraph({ children: [new TextRun({ text: obs, size: 16 })] })],
           }),
         ],
@@ -278,8 +291,9 @@ export async function generateWordReport(
     });
 
     const detailTable = new Table({
-      width: { size: 100, type: WidthType.PERCENTAGE },
+      width: { size: PAGE_WIDTH_DXA, type: WidthType.DXA },
       layout: TableLayoutType.FIXED,
+      columnWidths: [...DETAIL_COL],
       rows: [headerRow, ...dataRows],
     });
 

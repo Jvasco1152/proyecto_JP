@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Propuesta Comercial — Auditor JP</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 13px;
+      color: #1e293b;
+      background: #f8fafc;
+    }
+
+    .page {
+      max-width: 800px;
+      margin: 32px auto;
+      background: #fff;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.10);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 60%, #2563eb 100%);
+      padding: 40px 48px 32px;
+      color: #fff;
+      position: relative;
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 28px;
+    }
+    .brand {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .brand-sub {
+      font-size: 11px;
+      color: #93c5fd;
+      margin-top: 2px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .doc-label {
+      text-align: right;
+    }
+    .doc-label .tipo {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #93c5fd;
+    }
+    .doc-label .numero {
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .header-title {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    .header-sub {
+      font-size: 13px;
+      color: #bfdbfe;
+      margin-top: 6px;
+    }
+    .header-meta {
+      display: flex;
+      gap: 32px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      font-size: 12px;
+    }
+    .header-meta .meta-item label {
+      color: #93c5fd;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 10px;
+    }
+    .header-meta .meta-item p {
+      margin-top: 2px;
+      font-weight: 600;
+    }
+
+    /* ── BODY ── */
+    .body {
+      padding: 40px 48px;
+    }
+
+    .section {
+      margin-bottom: 36px;
+    }
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #1e40af;
+      margin-bottom: 14px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #dbeafe;
+    }
+
+    p {
+      line-height: 1.7;
+      color: #374151;
+    }
+
+    /* ── HIGHLIGHT BOX ── */
+    .highlight-box {
+      background: #eff6ff;
+      border-left: 4px solid #2563eb;
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+    .highlight-box p {
+      color: #1e3a8a;
+      font-weight: 500;
+    }
+
+    /* ── STATS ROW ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .stat-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-card .number {
+      font-size: 26px;
+      font-weight: 800;
+      color: #1e40af;
+      line-height: 1;
+    }
+    .stat-card .label {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    /* ── FORMS GRID ── */
+    .forms-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .form-card {
+      border-radius: 8px;
+      padding: 14px;
+      border: 1px solid;
+    }
+    .form-card.blue  { background: #eff6ff; border-color: #bfdbfe; }
+    .form-card.green { background: #f0fdf4; border-color: #bbf7d0; }
+    .form-card.purple{ background: #faf5ff; border-color: #e9d5ff; }
+    .form-card .num  { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .form-card.blue  .num { color: #1d4ed8; }
+    .form-card.green .num { color: #15803d; }
+    .form-card.purple .num { color: #7e22ce; }
+    .form-card .name { font-size: 12px; font-weight: 700; color: #1e293b; line-height: 1.3; }
+    .form-card .meta { font-size: 11px; color: #64748b; margin-top: 6px; }
+
+    /* ── COMPARISON TABLE ── */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 12px;
+    }
+    .compare-table th {
+      background: #1e40af;
+      color: #fff;
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .compare-table th:first-child { border-radius: 6px 0 0 0; }
+    .compare-table th:last-child  { border-radius: 0 6px 0 0; }
+    .compare-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #374151;
+      vertical-align: top;
+    }
+    .compare-table tr:nth-child(even) td { background: #f8fafc; }
+    .compare-table .before { color: #ef4444; }
+    .compare-table .after  { color: #16a34a; font-weight: 500; }
+    .check { color: #16a34a; font-weight: 700; margin-right: 4px; }
+    .cross { color: #ef4444; font-weight: 700; margin-right: 4px; }
+
+    /* ── ACCESS BOX ── */
+    .access-box {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 12px;
+      color: #0c4a6e;
+      line-height: 1.6;
+    }
+
+    /* ── PRICING ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .pricing-card {
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .pricing-card.featured {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 4px #dbeafe;
+    }
+    .pricing-head {
+      background: #f8fafc;
+      padding: 14px 16px;
+      text-align: center;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .pricing-card.featured .pricing-head {
+      background: #1e40af;
+      color: #fff;
+      border-bottom-color: transparent;
+    }
+    .pricing-card.featured .pricing-head .plan-label { color: #bfdbfe; }
+    .pricing-head .badge {
+      display: inline-block;
+      background: #fbbf24;
+      color: #78350f;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+    .plan-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .plan-name {
+      font-size: 14px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .pricing-body {
+      padding: 16px;
+    }
+    .price-main {
+      text-align: center;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .price-main .amount {
+      font-size: 20px;
+      font-weight: 800;
+      color: #1e40af;
+    }
+    .price-main .period {
+      font-size: 11px;
+      color: #64748b;
+    }
+    .price-main .setup {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+    .price-features {
+      list-style: none;
+      font-size: 11px;
+      color: #374151;
+    }
+    .price-features li {
+      padding: 3px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+    .price-features li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #16a34a;
+      font-weight: 700;
+    }
+
+    /* ── ROI BOX ── */
+    .roi-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin: 16px 0;
+    }
+    .roi-box .roi-title {
+      font-weight: 700;
+      color: #15803d;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    .roi-box p { color: #166534; font-size: 12px; line-height: 1.6; }
+
+    /* ── FOOTER ── */
+    .footer {
+      background: #1e293b;
+      color: #94a3b8;
+      padding: 24px 48px;
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer .footer-brand { color: #fff; font-weight: 700; font-size: 14px; }
+    .footer .footer-sub { margin-top: 2px; }
+    .footer .footer-right { text-align: right; }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: #f1f5f9;
+      margin: 8px 0 24px;
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      body { background: #fff; font-size: 11px; }
+      .page { margin: 0; box-shadow: none; border-radius: 0; max-width: 100%; }
+      .section { margin-bottom: 24px; }
+      .pricing-grid { gap: 10px; }
+      .forms-grid { gap: 8px; }
+      .stats-row { gap: 10px; }
+    }
+
+    @page {
+      margin: 10mm 12mm;
+      size: A4;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ══════════ HEADER ══════════ -->
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <div class="brand">Auditor JP</div>
+        <div class="brand-sub">Inspección Digital de Copropiedades</div>
+      </div>
+      <div class="doc-label">
+        <div class="tipo">Propuesta Comercial</div>
+        <div class="numero">AJ-2025-001</div>
+      </div>
+    </div>
+    <div class="header-title">Solución de Auditoría Digital para<br>Abelardo Yepes Administración</div>
+    <div class="header-sub">Herramienta móvil para inspección, documentación y reporte de copropiedades</div>
+    <div class="header-meta">
+      <div class="meta-item">
+        <label>Dirigido a</label>
+        <p>Abelardo Yepes Administración</p>
+      </div>
+      <div class="meta-item">
+        <label>Fecha</label>
+        <p>Junio 2025</p>
+      </div>
+      <div class="meta-item">
+        <label>Vigencia de la propuesta</label>
+        <p>30 días</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ BODY ══════════ -->
+  <div class="body">
+
+    <!-- INTRODUCCIÓN -->
+    <div class="section">
+      <div class="section-title">Introducción</div>
+      <p>
+        Abelardo Yepes Administración lleva más de 43 años gestionando copropiedades en el Área Metropolitana de Medellín, con presencia en más de 161 edificios y cerca de 10.400 familias beneficiadas. Esa trayectoria demuestra una operación seria, con estándares de servicio bien definidos.
+      </p>
+      <div class="highlight-box">
+        <p>
+          <strong>Auditor JP</strong> es una aplicación móvil desarrollada específicamente para empresas administradoras de copropiedades en Colombia. Permite a directores y auditores realizar visitas de inspección de forma estructurada, documentar hallazgos con fotos, generar informes profesionales automáticamente y obtener análisis con inteligencia artificial — todo desde el celular, sin necesidad de internet.
+        </p>
+      </div>
+    </div>
+
+    <!-- EL PROBLEMA -->
+    <div class="section">
+      <div class="section-title">El problema que resolvemos</div>
+      <p>En la mayoría de empresas administradoras, el proceso de inspección tiene tres puntos críticos:</p>
+      <br>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Proceso actual (sin herramienta)</th>
+            <th>Con Auditor JP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="cross">✗</span> Registro en papel, WhatsApp o Excel no estandarizado</td>
+            <td><span class="check">✓</span> Formulario guiado con criterios normativos por ítem</td>
+          </tr>
+          <tr>
+            <td><span class="cross">✗</span> El informe se redacta manualmente: 2 a 3 horas adicionales</td>
+            <td><span class="check">✓</span> Informe Word y Excel generados automáticamente en segundos</td>
+          </tr>
+          <tr>
+            <td><span class="cross">✗</span> Fotos en galería sin contexto, difíciles de organizar</td>
+            <td><span class="check">✓</span> Fotos vinculadas a cada hallazgo, embebidas en el informe</td>
+          </tr>
+          <tr>
+            <td><span class="cross">✗</span> Sin trazabilidad histórica por copropiedad</td>
+            <td><span class="check">✓</span> Excel descargable para seguimiento histórico mes a mes</td>
+          </tr>
+          <tr>
+            <td><span class="cross">✗</span> El consejo recibe informes tardíos y de calidad variable</td>
+            <td><span class="check">✓</span> Informe profesional, uniforme y con análisis de IA incluido</td>
+          </tr>
+          <tr>
+            <td><span class="cross">✗</span> Sin respaldo si no hay internet en la copropiedad</td>
+            <td><span class="check">✓</span> Funciona completamente offline (PWA instalable en el celular)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- LA SOLUCIÓN -->
+    <div class="section">
+      <div class="section-title">La solución: Auditor JP</div>
+      <p>La aplicación está disponible directamente desde el navegador del celular (no requiere descarga en tienda de aplicaciones). Incluye <strong>tres formularios de auditoría</strong> basados en la normatividad colombiana vigente:</p>
+      <br>
+      <div class="forms-grid">
+        <div class="form-card blue">
+          <div class="num">Formulario 1</div>
+          <div class="name">Gestión Operativa e Infraestructura</div>
+          <div class="meta">7 grupos · 18 ítems<br>Visita mensual operativa</div>
+        </div>
+        <div class="form-card green">
+          <div class="num">Formulario 2</div>
+          <div class="name">Unificada Completa</div>
+          <div class="meta">5 grupos · 25 ítems<br>Revisión integral trimestral</div>
+        </div>
+        <div class="form-card purple">
+          <div class="num">Formulario 3</div>
+          <div class="name">Auditoría Norma</div>
+          <div class="meta">3 grupos · 34 ítems<br>Verificación documental</div>
+        </div>
+      </div>
+      <br>
+      <p>Los formularios cubren: <strong>Seguridad física y humana</strong>, SG-SST, PMIRS, Ley de Piscinas (Ley 1209), Infraestructura, Servicios Públicos, Convivencia, Gestión Documental y Conocimientos del personal — alineados con la <strong>Ley 675 de 2001</strong>.</p>
+    </div>
+
+    <!-- FUNCIONALIDADES -->
+    <div class="section">
+      <div class="section-title">Funcionalidades principales</div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>Función</th><th>Descripción</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Formulario guiado</strong></td>
+            <td>Criterio de verificación claro para cada ítem. Calificación: Cumple / Cumple Parcial / No Cumple / N/A</td>
+          </tr>
+          <tr>
+            <td><strong>Evidencia fotográfica</strong></td>
+            <td>Hasta 3 fotos por ítem tomadas directamente desde el celular</td>
+          </tr>
+          <tr>
+            <td><strong>Cálculo automático</strong></td>
+            <td>Porcentaje de cumplimiento por sección y general, en tiempo real</td>
+          </tr>
+          <tr>
+            <td><strong>Informe Word</strong></td>
+            <td>Documento profesional con portada, tablas por sección, fotos embebidas y análisis IA</td>
+          </tr>
+          <tr>
+            <td><strong>Informe Excel</strong></td>
+            <td>3 hojas: Datos generales, Resumen por sección, Detalle con fotos</td>
+          </tr>
+          <tr>
+            <td><strong>Análisis con IA</strong></td>
+            <td>Resumen ejecutivo, nivel de riesgo, hallazgos críticos y recomendaciones priorizadas</td>
+          </tr>
+          <tr>
+            <td><strong>Guardado automático</strong></td>
+            <td>La inspección se guarda localmente. Si cierra la app, puede continuar donde quedó</td>
+          </tr>
+          <tr>
+            <td><strong>Offline first</strong></td>
+            <td>No requiere internet durante la visita. Funciona en cualquier copropiedad</td>
+          </tr>
+          <tr>
+            <td><strong>Sin instalación</strong></td>
+            <td>Se abre desde el navegador del celular o se instala como app con un clic (PWA)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- RETORNO DE INVERSIÓN -->
+    <div class="section">
+      <div class="section-title">Retorno de inversión estimado</div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="number">161</div>
+          <div class="label">copropiedades bajo gestión</div>
+        </div>
+        <div class="stat-card">
+          <div class="number">~2 h</div>
+          <div class="label">ahorradas por informe generado</div>
+        </div>
+        <div class="stat-card">
+          <div class="number">+40 h</div>
+          <div class="label">liberadas al mes (5 auditores)</div>
+        </div>
+      </div>
+      <div class="roi-box">
+        <div class="roi-title">Ejemplo de ahorro mensual real</div>
+        <p>
+          Si la empresa cuenta con 5 auditores realizando en promedio 3 visitas semanales cada uno,
+          eso equivale a <strong>60 informes al mes</strong>. Con Auditor JP, cada informe que antes
+          tomaba 2 horas de trabajo administrativo se genera automáticamente. Al costo de COP 15.000/hora
+          de un auxiliar administrativo, el ahorro mensual supera los <strong>COP 1.800.000</strong> —
+          solo en tiempo de redacción de informes.
+        </p>
+      </div>
+    </div>
+
+    <!-- MODELO DE ACCESO Y DESPLIEGUE -->
+    <div class="section">
+      <div class="section-title">Modelo de acceso y despliegue</div>
+      <p>Auditor JP es una aplicación web progresiva (PWA): no requiere tienda de aplicaciones, se instala desde el navegador en el celular de cada auditor. El funcionamiento para un equipo es el siguiente:</p>
+      <br>
+      <table class="compare-table">
+        <thead>
+          <tr><th>Aspecto</th><th>Cómo funciona</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Acceso del equipo</strong></td>
+            <td>Cada auditor recibe la URL y sus credenciales. Instala la app en su celular en menos de un minuto, sin necesidad de tiendas de aplicaciones</td>
+          </tr>
+          <tr>
+            <td><strong>Datos de la inspección</strong></td>
+            <td>Se guardan en el propio celular del auditor durante la visita (funciona 100% sin internet en campo). Al terminar, genera el informe y lo descarga</td>
+          </tr>
+          <tr>
+            <td><strong>Entrega de informes</strong></td>
+            <td>El auditor descarga el Word o Excel desde su celular y lo envía por correo, WhatsApp o Google Drive al director o al consejo de administración</td>
+          </tr>
+          <tr>
+            <td><strong>Infraestructura</strong></td>
+            <td>La aplicación se aloja en servidor en la nube (Vercel). No requiere servidores propios ni infraestructura adicional de la empresa</td>
+          </tr>
+          <tr>
+            <td><strong>Escalabilidad</strong></td>
+            <td>Cada dispositivo es independiente: uno o diez auditores pueden usar la app simultáneamente sin ningún conflicto</td>
+          </tr>
+          <tr>
+            <td><strong>Seguridad de acceso</strong></td>
+            <td>La herramienta está protegida por usuario y contraseña. Cada auditor puede tener sus propias credenciales configuradas durante el proceso de onboarding</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="access-box">
+        <strong>¿Qué necesita cada auditor para empezar?</strong> Solo tres cosas: un celular con navegador (Chrome o Safari), la URL de la aplicación y sus credenciales de acceso. Sin descargas de tiendas, sin configuraciones especiales, sin depender del área de IT de la empresa.
+      </div>
+    </div>
+
+    <!-- PROPUESTA ECONÓMICA -->
+    <div class="section">
+      <div class="section-title">Propuesta económica</div>
+      <p>Se presentan tres modelos según el nivel de control y compromiso que mejor se adapte a la operación de Abelardo Yepes:</p>
+      <br>
+      <div class="pricing-grid">
+
+        <div class="pricing-card">
+          <div class="pricing-head">
+            <div class="plan-label">Opción A</div>
+            <div class="plan-name">Licencia Mensual</div>
+          </div>
+          <div class="pricing-body">
+            <div class="price-main">
+              <div class="amount">COP 650.000</div>
+              <div class="period">/ mes · hasta 5 auditores</div>
+              <div class="setup">+ COP 1.500.000 implementación (única vez)</div>
+            </div>
+            <ul class="price-features">
+              <li>Acceso ilimitado a los 3 formularios</li>
+              <li>Informes Word y Excel ilimitados</li>
+              <li>Análisis con IA incluido</li>
+              <li>Actualizaciones incluidas</li>
+              <li>Soporte por WhatsApp</li>
+              <li>Capacitación inicial del equipo</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="pricing-card featured">
+          <div class="pricing-head">
+            <div class="badge">Recomendada</div>
+            <div class="plan-label">Opción B</div>
+            <div class="plan-name">Licencia Anual</div>
+          </div>
+          <div class="pricing-body">
+            <div class="price-main">
+              <div class="amount">COP 8.500.000</div>
+              <div class="period">/ año · hasta 10 auditores</div>
+              <div class="setup">+ COP 1.500.000 implementación (única vez)</div>
+            </div>
+            <ul class="price-features">
+              <li>Todo lo de la Opción A</li>
+              <li>Hasta 10 auditores simultáneos</li>
+              <li>1 mes gratis incluido</li>
+              <li>Prioridad en soporte</li>
+              <li>Ajuste de formularios (hasta 2 al año)</li>
+              <li>Reunión de seguimiento semestral</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="pricing-card">
+          <div class="pricing-head">
+            <div class="plan-label">Opción C</div>
+            <div class="plan-name">Implementación Propia</div>
+          </div>
+          <div class="pricing-body">
+            <div class="price-main">
+              <div class="amount">COP 22.000.000</div>
+              <div class="period">pago único</div>
+              <div class="setup">Soporte técnico: COP 3.000.000/año (opcional)</div>
+            </div>
+            <ul class="price-features">
+              <li>Entrega del código fuente completo</li>
+              <li>Personalización con logo y colores propios</li>
+              <li>Dominio y despliegue en servidor propio</li>
+              <li>Sin pagos recurrentes obligatorios</li>
+              <li>Propiedad total sobre la herramienta</li>
+              <li>Capacitación técnica al equipo de IT</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="access-box" style="margin-top: 16px;">
+        <strong>Módulo multi-usuario (add-on, cotizable aparte):</strong> Si en el futuro se requiere historial centralizado en la nube, panel de administración con métricas por auditor o integración con el sistema de gestión existente, se desarrolla como módulo adicional. Disponible para Opciones B y C.
+      </div>
+
+      <p style="font-size: 11px; color: #64748b; margin-top: 12px;">
+        * Valores en pesos colombianos (COP) + IVA. Vigencia: 30 días desde la fecha de esta propuesta.
+      </p>
+    </div>
+
+    <!-- PRÓXIMOS PASOS -->
+    <div class="section">
+      <div class="section-title">Próximos pasos</div>
+      <table class="compare-table">
+        <thead>
+          <tr><th>#</th><th>Paso</th><th>Responsable</th><th>Tiempo estimado</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1</strong></td>
+            <td>Revisión de la propuesta y selección de opción</td>
+            <td>Abelardo Yepes</td>
+            <td>1 semana</td>
+          </tr>
+          <tr>
+            <td><strong>2</strong></td>
+            <td>Acuerdo de servicio y pago inicial</td>
+            <td>Ambas partes</td>
+            <td>1–2 días</td>
+          </tr>
+          <tr>
+            <td><strong>3</strong></td>
+            <td>Configuración de accesos, credenciales y capacitación del equipo auditor</td>
+            <td>Auditor JP</td>
+            <td>1–2 días</td>
+          </tr>
+          <tr>
+            <td><strong>4</strong></td>
+            <td>Inicio de operación en campo</td>
+            <td>Equipo auditor</td>
+            <td>Al día 5</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /body -->
+
+  <!-- ══════════ FOOTER ══════════ -->
+  <div class="footer">
+    <div>
+      <div class="footer-brand">Auditor JP</div>
+      <div class="footer-sub">Inspección Digital de Copropiedades · Colombia</div>
+    </div>
+    <div class="footer-right">
+      <div>Propuesta válida por 30 días</div>
+      <div style="margin-top: 2px;">Junio 2025 · Confidencial</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- INSTRUCCIÓN DE IMPRESIÓN -->
+<div style="max-width:800px; margin: 16px auto; text-align:center; font-family: Arial; font-size: 12px; color: #94a3b8;">
+  Para guardar como PDF: <strong>Ctrl+P</strong> → Destino: "Guardar como PDF" → Márgenes: Mínimos → Activar "Gráficos de fondo"
+</div>
+
+</body>
+</html>
