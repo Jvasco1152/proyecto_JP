@@ -18,12 +18,12 @@ export default function StepHeader({ data, onChange }: StepHeaderProps) {
 
   function handleDirectorChange(name: string) {
     const dir = directors.find(d => d.name === name);
-    onChange({ ...data, director: name, directorEmail: dir?.email || '' });
+    onChange({ ...data, director: name, directorEmail: dir?.email || data.directorEmail || '' });
   }
 
   function handleAuditorChange(name: string) {
     const aud = auditors.find(a => a.name === name);
-    onChange({ ...data, auditor: name, auditorEmail: aud?.email || '' });
+    onChange({ ...data, auditor: name, auditorEmail: aud?.email || data.auditorEmail || '' });
   }
 
   return (
@@ -47,42 +47,49 @@ export default function StepHeader({ data, onChange }: StepHeaderProps) {
         value={data.director}
         onChange={handleDirectorChange}
         options={directorOptions}
-        placeholder="Seleccionar director..."
+        placeholder="Escribe o selecciona un director..."
         searchable
+        allowCustom
         required
       />
 
-      {data.directorEmail && (
-        <div className="flex items-center gap-2 px-3 py-2 bg-primary-50 rounded-lg text-sm text-primary-700">
-          <Mail className="w-4 h-4 flex-shrink-0" />
-          <span className="truncate">{data.directorEmail}</span>
-        </div>
-      )}
+      <Input
+        label="Email director"
+        type="email"
+        value={data.directorEmail}
+        onChange={e => onChange({ ...data, directorEmail: e.target.value })}
+        icon={<Mail className="w-4 h-4" />}
+        placeholder="correo@ejemplo.com"
+      />
 
       <Select
         label="Auditor"
         value={data.auditor}
         onChange={handleAuditorChange}
         options={auditorOptions}
-        placeholder="Seleccionar auditor..."
+        placeholder="Escribe o selecciona un auditor..."
         searchable
+        allowCustom
         required
       />
 
-      {data.auditorEmail && (
-        <div className="flex items-center gap-2 px-3 py-2 bg-primary-50 rounded-lg text-sm text-primary-700">
-          <Mail className="w-4 h-4 flex-shrink-0" />
-          <span className="truncate">{data.auditorEmail}</span>
-        </div>
-      )}
+      <Input
+        label="Email auditor"
+        type="email"
+        value={data.auditorEmail}
+        onChange={e => onChange({ ...data, auditorEmail: e.target.value })}
+        icon={<Mail className="w-4 h-4" />}
+        placeholder="correo@ejemplo.com"
+      />
 
       <Select
         label="Copropiedad"
         value={data.copropiedad}
         onChange={v => onChange({ ...data, copropiedad: v })}
         options={copropiedadOptions}
-        placeholder="Seleccionar copropiedad..."
+        placeholder="Escribe o selecciona una copropiedad..."
         searchable
+        allowCustom
         required
       />
     </div>
