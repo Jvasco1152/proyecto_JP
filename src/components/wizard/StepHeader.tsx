@@ -1,10 +1,6 @@
-import { Calendar, Mail } from 'lucide-react';
+import { Calendar, Mail, User, Building2 } from 'lucide-react';
 import type { HeaderData } from '../../types/inspection';
-import { directors } from '../../data/directors';
-import { auditors } from '../../data/auditors';
-import { copropiedades } from '../../data/copropiedades';
 import Input from '../ui/Input';
-import Select from '../ui/Select';
 
 interface StepHeaderProps {
   data: HeaderData;
@@ -12,20 +8,6 @@ interface StepHeaderProps {
 }
 
 export default function StepHeader({ data, onChange }: StepHeaderProps) {
-  const directorOptions = directors.map(d => ({ value: d.name, label: d.name }));
-  const auditorOptions = auditors.map(a => ({ value: a.name, label: a.name }));
-  const copropiedadOptions = copropiedades.map(c => ({ value: c, label: c }));
-
-  function handleDirectorChange(name: string) {
-    const dir = directors.find(d => d.name === name);
-    onChange({ ...data, director: name, directorEmail: dir?.email || data.directorEmail || '' });
-  }
-
-  function handleAuditorChange(name: string) {
-    const aud = auditors.find(a => a.name === name);
-    onChange({ ...data, auditor: name, auditorEmail: aud?.email || data.auditorEmail || '' });
-  }
-
   return (
     <div className="space-y-4">
       <div>
@@ -42,14 +24,13 @@ export default function StepHeader({ data, onChange }: StepHeaderProps) {
         required
       />
 
-      <Select
+      <Input
         label="Director"
+        type="text"
         value={data.director}
-        onChange={handleDirectorChange}
-        options={directorOptions}
-        placeholder="Escribe o selecciona un director..."
-        searchable
-        allowCustom
+        onChange={e => onChange({ ...data, director: e.target.value })}
+        icon={<User className="w-4 h-4" />}
+        placeholder="Nombre del director"
         required
       />
 
@@ -62,14 +43,13 @@ export default function StepHeader({ data, onChange }: StepHeaderProps) {
         placeholder="correo@ejemplo.com"
       />
 
-      <Select
+      <Input
         label="Auditor"
+        type="text"
         value={data.auditor}
-        onChange={handleAuditorChange}
-        options={auditorOptions}
-        placeholder="Escribe o selecciona un auditor..."
-        searchable
-        allowCustom
+        onChange={e => onChange({ ...data, auditor: e.target.value })}
+        icon={<User className="w-4 h-4" />}
+        placeholder="Nombre del auditor"
         required
       />
 
@@ -82,14 +62,13 @@ export default function StepHeader({ data, onChange }: StepHeaderProps) {
         placeholder="correo@ejemplo.com"
       />
 
-      <Select
+      <Input
         label="Copropiedad"
+        type="text"
         value={data.copropiedad}
-        onChange={v => onChange({ ...data, copropiedad: v })}
-        options={copropiedadOptions}
-        placeholder="Escribe o selecciona una copropiedad..."
-        searchable
-        allowCustom
+        onChange={e => onChange({ ...data, copropiedad: e.target.value })}
+        icon={<Building2 className="w-4 h-4" />}
+        placeholder="Nombre de la copropiedad"
         required
       />
     </div>
