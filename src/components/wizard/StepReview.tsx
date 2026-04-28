@@ -87,20 +87,26 @@ export default function StepReview({
           <div key={score.sectionId} className="bg-white rounded-xl border border-slate-200 p-3">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-slate-800">{score.sectionTitle}</span>
-              <span className={`text-sm font-bold ${
-                score.porcentaje >= 80 ? 'text-green-600' : score.porcentaje >= 60 ? 'text-yellow-600' : 'text-red-600'
-              }`}>
-                {score.porcentaje}%
-              </span>
+              {score.noAplicable ? (
+                <span className="text-sm font-bold text-slate-400">N/A</span>
+              ) : (
+                <span className={`text-sm font-bold ${
+                  score.porcentaje >= 80 ? 'text-green-600' : score.porcentaje >= 60 ? 'text-yellow-600' : 'text-red-600'
+                }`}>
+                  {score.porcentaje}%
+                </span>
+              )}
             </div>
-            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-              <div
-                className={`h-full rounded-full transition-all ${
-                  score.porcentaje >= 80 ? 'bg-green-500' : score.porcentaje >= 60 ? 'bg-yellow-500' : 'bg-red-500'
-                }`}
-                style={{ width: `${score.porcentaje}%` }}
-              />
-            </div>
+            {!score.noAplicable && (
+              <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all ${
+                    score.porcentaje >= 80 ? 'bg-green-500' : score.porcentaje >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+                  }`}
+                  style={{ width: `${score.porcentaje}%` }}
+                />
+              </div>
+            )}
             <div className="flex gap-3 mt-2 text-xs text-slate-500">
               <span className="flex items-center gap-1">
                 <CheckCircle2 className="w-3 h-3 text-green-500" />

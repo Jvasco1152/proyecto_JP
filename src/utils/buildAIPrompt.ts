@@ -5,7 +5,7 @@ export function buildAIPrompt(formData: InspectionFormData, sections: Inspection
   const scores = calculateSectionScores(formData, sections);
   const overall = calculateOverallScore(formData, sections);
 
-  let prompt = `Eres un experto en administración de copropiedades en Colombia (Ley 675 de 2001). Analiza los siguientes resultados de una auditoría de inspección y genera un informe profesional.
+  let prompt = `Analiza los siguientes resultados de una auditoría de inspección y genera un informe profesional en JSON.
 
 DATOS DE LA INSPECCIÓN:
 - Copropiedad: ${formData.header.copropiedad}
@@ -17,23 +17,29 @@ ESCALA DE EVALUACIÓN:
 - Cumple (C) = 100% - El ítem cumple todos los criterios de verificación
 - Cumple Parcial (CP) = 50% - El ítem cumple parcialmente los criterios
 - No Cumple (NC) = 0% - El ítem no cumple los criterios
-- No Aplica (NA) = Excluido del cálculo
+- No Aplica (NA) = Excluido del cálculo de cumplimiento
 
 RESULTADOS POR SECCIÓN (${sections.length} grupos):
 `;
 
   scores.forEach(score => {
-    prompt += `\n${score.sectionTitle}: ${score.porcentaje}% cumplimiento (${score.cumple} cumple, ${score.cumpleParcial} parcial, ${score.noCumple} no cumple, ${score.noAplica} N/A)`;
+    if (score.noAplicable) {
+      prompt += `\n${score.sectionTitle}: No aplica (todos los ítems marcados N/A)`;
+    } else {
+      prompt += `\n${score.sectionTitle}: ${score.porcentaje}% cumplimiento (${score.cumple} cumple, ${score.cumpleParcial} parcial, ${score.noCumple} no cumple, ${score.noAplica} N/A)`;
+    }
   });
 
   prompt += `\n\nPUNTAJE GENERAL: ${overall}% de cumplimiento`;
 
-  prompt += `\n\nDETALLE DE HALLAZGOS:`;
+  prompt += `\n\nDETALLE DE HALLAZGOS (solo ítems No Cumple o Cumple Parcial):`;
 
   sections.forEach(section => {
     const itemsWithIssues = section.items.filter(item => {
       const data = formData.sections[item.id];
-      return data && (data.status === 'no_cumple' || data.status === 'cumple_parcial' || (data.observation && data.observation.trim()));
+      // Excluir explícitamente los ítems N/A — no generan hallazgos
+      if (!data || data.status === 'no_aplica') return false;
+      return data.status === 'no_cumple' || data.status === 'cumple_parcial';
     });
 
     if (itemsWithIssues.length > 0) {
@@ -41,7 +47,7 @@ RESULTADOS POR SECCIÓN (${sections.length} grupos):
       itemsWithIssues.forEach(item => {
         const data = formData.sections[item.id];
         if (!data) return;
-        const statusLabel = data.status === 'no_cumple' ? 'NO CUMPLE' : data.status === 'cumple_parcial' ? 'CUMPLE PARCIAL' : 'CUMPLE';
+        const statusLabel = data.status === 'no_cumple' ? 'NO CUMPLE' : 'CUMPLE PARCIAL';
         prompt += `\n- ${item.label}: ${statusLabel}`;
         prompt += `\n  Criterio de verificación: ${item.criterio}`;
         if (data.observation.trim()) {
@@ -57,20 +63,21 @@ RESULTADOS POR SECCIÓN (${sections.length} grupos):
 
   prompt += `\n\nGenera tu respuesta en formato JSON con esta estructura exacta:
 {
-  "resumenEjecutivo": "Párrafo de 3-5 oraciones con resumen ejecutivo profesional",
+  "resumenEjecutivo": "Párrafo de 3-5 oraciones con resumen ejecutivo profesional, dirigido al Consejo de Administración",
   "nivelRiesgo": "bajo|medio|alto|critico",
-  "hallazgosCriticos": ["hallazgo 1", "hallazgo 2", ...],
+  "hallazgosCriticos": ["hallazgo 1 con Condición, Criterio, Causa, Efecto y Recomendación", ...],
   "recomendaciones": ["recomendación priorizada 1", "recomendación priorizada 2", ...],
   "porcentajeCumplimiento": ${overall}
 }
 
 IMPORTANTE:
 - Responde SOLO con el JSON, sin markdown ni texto adicional
+- Los hallazgos SOLO deben incluir ítems No Cumple o Cumple Parcial; NUNCA incluyas ítems N/A como hallazgos
 - Las recomendaciones deben estar priorizadas de mayor a menor urgencia
 - El nivel de riesgo debe reflejar la gravedad de los hallazgos
 - Usa lenguaje profesional y técnico en español
-- Incluye referencias a la normatividad colombiana cuando sea relevante
-- Ten en cuenta que "Cumple Parcial" indica cumplimiento incompleto que requiere atención`;
+- Incluye referencias a la Ley 675 de 2001 y normatividad colombiana cuando sea relevante
+- Si algún hallazgo requiere intervención de abogado o contador especializado, indícalo como sugerencia de control`;
 
   return prompt;
 }

@@ -196,7 +196,7 @@ export async function generateWordReport(
           new TableCell({ width: { size: SCORE_COL[2], type: WidthType.DXA }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(s.cumpleParcial), size: 18, color: COLORS.amber })] })] }),
           new TableCell({ width: { size: SCORE_COL[3], type: WidthType.DXA }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(s.noCumple), size: 18, color: COLORS.danger })] })] }),
           new TableCell({ width: { size: SCORE_COL[4], type: WidthType.DXA }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: String(s.noAplica), size: 18, color: COLORS.gray })] })] }),
-          new TableCell({ width: { size: SCORE_COL[5], type: WidthType.DXA }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: `${s.porcentaje}%`, bold: true, size: 18, color: scoreColor(s.porcentaje) })] })] }),
+          new TableCell({ width: { size: SCORE_COL[5], type: WidthType.DXA }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: s.noAplicable ? 'N/A' : `${s.porcentaje}%`, bold: true, size: 18, color: s.noAplicable ? COLORS.gray : scoreColor(s.porcentaje) })] })] }),
         ],
       })),
     ];
@@ -211,9 +211,9 @@ export async function generateWordReport(
     aiSections.push(scoreTable as unknown as Paragraph);
     aiSections.push(spacer());
 
-    // Hallazgos Criticos
+    // Hallazgos
     if (analysis.hallazgosCriticos.length > 0) {
-      aiSections.push(heading('HALLAZGOS CRITICOS', HeadingLevel.HEADING_2));
+      aiSections.push(heading('HALLAZGOS', HeadingLevel.HEADING_2));
       aiSections.push(spacer());
       analysis.hallazgosCriticos.forEach(h => {
         aiSections.push(new Paragraph({

@@ -56,6 +56,7 @@ export interface SectionScore {
   noCumple: number;
   noAplica: number;
   porcentaje: number;
+  noAplicable: boolean; // true cuando todos los ítems son N/A (sin ítems evaluables)
 }
 
 export interface DirectorInfo {

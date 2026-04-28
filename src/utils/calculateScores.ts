@@ -20,6 +20,7 @@ export function calculateSectionScores(
     });
 
     const evaluados = cumple + cumpleParcial + noCumple;
+    const noAplicable = evaluados === 0;
     const porcentaje = evaluados > 0
       ? Math.round((cumple * 100 + cumpleParcial * 50) / evaluados)
       : 0;
@@ -33,6 +34,7 @@ export function calculateSectionScores(
       noCumple,
       noAplica,
       porcentaje,
+      noAplicable,
     };
   });
 }

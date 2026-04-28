@@ -14,11 +14,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { prompt } = req.body;
+    const { prompt, systemPrompt } = req.body;
 
     if (!prompt || typeof prompt !== 'string') {
       return res.status(400).json({ error: 'Prompt is required' });
     }
+
+    const messages: { role: string; content: string }[] = [];
+    if (systemPrompt && typeof systemPrompt === 'string') {
+      messages.push({ role: 'system', content: systemPrompt });
+    }
+    messages.push({ role: 'user', content: prompt });
 
     const response = await fetch(GROQ_API_URL, {
       method: 'POST',
@@ -28,7 +34,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
       body: JSON.stringify({
         model: GROQ_MODEL,
-        messages: [{ role: 'user', content: prompt }],
+        messages,
         temperature: 0.3,
         max_tokens: 2048,
       }),
