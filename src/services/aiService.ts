@@ -96,7 +96,14 @@ export async function analyzeInspection(
   }
 
   try {
-    const analysis = JSON.parse(jsonText) as AIAnalysis;
+    const raw = JSON.parse(jsonText);
+    const analysis: AIAnalysis = {
+      resumenEjecutivo: typeof raw.resumenEjecutivo === 'string' ? raw.resumenEjecutivo : '',
+      nivelRiesgo: ['bajo', 'medio', 'alto', 'critico'].includes(raw.nivelRiesgo) ? raw.nivelRiesgo : 'medio',
+      hallazgosCriticos: Array.isArray(raw.hallazgosCriticos) ? raw.hallazgosCriticos.filter((x: unknown) => typeof x === 'string') : [],
+      recomendaciones: Array.isArray(raw.recomendaciones) ? raw.recomendaciones.filter((x: unknown) => typeof x === 'string') : [],
+      porcentajeCumplimiento: typeof raw.porcentajeCumplimiento === 'number' ? raw.porcentajeCumplimiento : 0,
+    };
     return analysis;
   } catch {
     throw new Error('Error al parsear respuesta de IA. Respuesta: ' + text.substring(0, 200));

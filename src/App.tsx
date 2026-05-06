@@ -4,6 +4,7 @@ import { useAuth } from './hooks/useAuth';
 import LoginScreen from './components/LoginScreen';
 import HomeScreen from './components/HomeScreen';
 import WizardLayout from './components/wizard/WizardLayout';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const FORM_TYPE_KEY = 'auditor_jp_form_type';
 
@@ -33,7 +34,11 @@ function App() {
     return <HomeScreen onSelect={handleSelect} onLogout={logout} />;
   }
 
-  return <WizardLayout formType={formType} onBack={handleBack} onLogout={logout} />;
+  return (
+    <ErrorBoundary>
+      <WizardLayout formType={formType} onBack={handleBack} onLogout={logout} />
+    </ErrorBoundary>
+  );
 }
 
 export default App;
