@@ -44,11 +44,8 @@ export function calculateOverallScore(
   sections: InspectionSectionDef[],
 ): number {
   const scores = calculateSectionScores(formData, sections);
-  const totalCumple = scores.reduce((acc, s) => acc + s.cumple, 0);
-  const totalParcial = scores.reduce((acc, s) => acc + s.cumpleParcial, 0);
-  const totalNoCumple = scores.reduce((acc, s) => acc + s.noCumple, 0);
-  const totalEvaluados = totalCumple + totalParcial + totalNoCumple;
-  return totalEvaluados > 0
-    ? Math.round((totalCumple * 100 + totalParcial * 50) / totalEvaluados)
-    : 0;
+  const activeScores = scores.filter(s => !s.noAplicable);
+  if (activeScores.length === 0) return 0;
+  const sum = activeScores.reduce((acc, s) => acc + s.porcentaje, 0);
+  return Math.round(sum / activeScores.length);
 }
