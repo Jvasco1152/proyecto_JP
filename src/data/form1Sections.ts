@@ -313,6 +313,13 @@ export const form1Sections: InspectionSectionDef[] = [
         frecuencia: 'Mensual',
         allowNA: true,
       },
+      {
+        id: 'f1_tec_07',
+        label: 'Condiciones del archivo documental',
+        criterio: 'Custodia bajo llave y control de acceso (Habeas Data); ambiente seco, ventilado y aislado de redes hidráulicas; estanterías elevadas libres de objetos ajenos; cajas normalizadas, rotuladas y libros foliados; cumplimiento del tiempo legal de retención y respaldo digital.',
+        frecuencia: 'Mensual',
+        allowNA: true,
+      },
     ],
   },
   {
